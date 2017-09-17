@@ -4,7 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.fivido.sectionedexpandablegridlayout.models.Item;
+import com.fivido.sectionedexpandablegridlayout.models.Category;
+import com.fivido.sectionedexpandablegridlayout.models.SubCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +18,12 @@ import java.util.Map;
 public class SectionedExpandableLayoutHelper implements SectionStateChangeListener {
 
     //data list
-    private LinkedHashMap<Section, ArrayList<Item>> mSectionDataMap = new LinkedHashMap<Section, ArrayList<Item>>();
+    private LinkedHashMap<Category, ArrayList<SubCategory>> mSectionDataMap = new LinkedHashMap<Category, ArrayList<SubCategory>>();
     private ArrayList<Object> mDataArrayList = new ArrayList<Object>();
 
     //section map
     //TODO : look for a way to avoid this
-    private HashMap<String, Section> mSectionMap = new HashMap<String, Section>();
+    private HashMap<String, Category> mSectionMap = new HashMap<String, Category>();
 
     //adapter
     private SectionedExpandableGridAdapter mSectionedExpandableGridAdapter;
@@ -49,18 +50,27 @@ public class SectionedExpandableLayoutHelper implements SectionStateChangeListen
         mSectionedExpandableGridAdapter.notifyDataSetChanged();
     }
 
-    public void addSection(String section, ArrayList<Item> items) {
-        Section newSection;
-        mSectionMap.put(section, (newSection = new Section(section)));
-        mSectionDataMap.put(newSection, items);
+    public void addSection(String section, ArrayList<SubCategory> subCategories) {
+        Category newCategory;
+        newCategory = new Category();
+        newCategory.isExpanded = false;
+        newCategory.subCategories = subCategories;
+        if(subCategories.size() > 0){
+            newCategory.status = true;
+        }else{
+            newCategory.status = false;
+        }
+
+        mSectionMap.put(section, newCategory);
+        mSectionDataMap.put(newCategory, subCategories);
     }
 
-    public void addItem(String section, Item item) {
-        mSectionDataMap.get(mSectionMap.get(section)).add(item);
+    public void addItem(String section, SubCategory subCategory) {
+        mSectionDataMap.get(mSectionMap.get(section)).add(subCategory);
     }
 
-    public void removeItem(String section, Item item) {
-        mSectionDataMap.get(mSectionMap.get(section)).remove(item);
+    public void removeItem(String section, SubCategory subCategory) {
+        mSectionDataMap.get(mSectionMap.get(section)).remove(subCategory);
     }
 
     public void removeSection(String section) {
@@ -70,8 +80,8 @@ public class SectionedExpandableLayoutHelper implements SectionStateChangeListen
 
     private void generateDataList () {
         mDataArrayList.clear();
-        for (Map.Entry<Section, ArrayList<Item>> entry : mSectionDataMap.entrySet()) {
-            Section key;
+        for (Map.Entry<Category, ArrayList<SubCategory>> entry : mSectionDataMap.entrySet()) {
+            Category key;
             mDataArrayList.add((key = entry.getKey()));
             if (key.isExpanded)
                 mDataArrayList.addAll(entry.getValue());
@@ -79,9 +89,9 @@ public class SectionedExpandableLayoutHelper implements SectionStateChangeListen
     }
 
     @Override
-    public void onSectionStateChanged(Section section, boolean isOpen) {
+    public void onSectionStateChanged(Category category, boolean isOpen) {
         if (!mRecyclerView.isComputingLayout()) {
-            section.isExpanded = isOpen;
+            category.isExpanded = isOpen;
             notifyDataSetChanged();
         }
     }

@@ -11,7 +11,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.fivido.sectionedexpandablegridlayout.R;
-import com.fivido.sectionedexpandablegridlayout.models.Item;
+import com.fivido.sectionedexpandablegridlayout.models.Category;
+import com.fivido.sectionedexpandablegridlayout.models.SubCategory;
 
 import java.util.ArrayList;
 
@@ -51,7 +52,7 @@ public class SectionedExpandableGridAdapter extends RecyclerView.Adapter<Section
     }
 
     private boolean isSection(int position) {
-        return mDataArrayList.get(position) instanceof Section;
+        return mDataArrayList.get(position) instanceof Category;
     }
 
     @Override
@@ -64,29 +65,35 @@ public class SectionedExpandableGridAdapter extends RecyclerView.Adapter<Section
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.viewType) {
             case VIEW_TYPE_ITEM :
-                final Item item = (Item) mDataArrayList.get(position);
-                holder.itemTextView.setText(item.getName());
+                final SubCategory subCategory = (SubCategory) mDataArrayList.get(position);
+                holder.itemTextView.setText(subCategory.getName());
                 holder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mItemClickListener.itemClicked(item);
+                        mItemClickListener.itemClicked(subCategory);
                     }
                 });
                 break;
             case VIEW_TYPE_SECTION :
-                final Section section = (Section) mDataArrayList.get(position);
-                holder.sectionTextView.setText(section.getName());
+                final Category category = (Category) mDataArrayList.get(position);
+                //category.isExpanded = false;
+                if(category.status){
+                    holder.sectionToggleButton.setVisibility(View.VISIBLE);
+                }else{
+                    holder.sectionToggleButton.setVisibility(View.GONE);
+                }
+                holder.sectionTextView.setText(category.getName());
                 holder.sectionTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mItemClickListener.itemClicked(section);
+                        if(category.status) mItemClickListener.itemClicked(category);
                     }
                 });
-                holder.sectionToggleButton.setChecked(section.isExpanded);
+                holder.sectionToggleButton.setChecked(category.isExpanded);
                 holder.sectionToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        mSectionStateChangeListener.onSectionStateChanged(section, isChecked);
+                        mSectionStateChangeListener.onSectionStateChanged(category, isChecked);
                     }
                 });
                 break;

@@ -3,12 +3,12 @@ package com.fivido.sectionedexpandablegridlayout.models;
 /**
  * Created by bpncool on 2/23/2016.
  */
-public class Item {
+public class SubCategory {
 
-    private final String name;
-    private final int id;
+    public final String name;
+    public final int id;
 
-    public Item(String name, int id) {
+    public SubCategory(String name, int id) {
         this.name = name;
         this.id = id;
     }

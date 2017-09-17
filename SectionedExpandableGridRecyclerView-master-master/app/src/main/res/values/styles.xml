@@ -3,11 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="actionBarStyle">@style/AppActionBarStyle</item>
+        <subCategory name="actionBarStyle">@style/AppActionBarStyle</subCategory>
     </style>
 
     <style name="AppActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="background">@drawable/theme_color</item>
+        <subCategory name="background">@drawable/theme_color</subCategory>
     </style>
 
 </resources>
